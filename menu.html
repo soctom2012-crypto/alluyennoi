@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>English Conversation Tutor | Friendly Native Teacher</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background: linear-gradient(145deg, #e0eafc 0%, #cfdef3 100%);
+            font-family: 'Segoe UI', 'Roboto', 'Helvetica Neue', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        /* chat container */
+        .chat-app {
+            max-width: 850px;
+            width: 100%;
+            height: 90vh;
+            background-color: #ffffff;
+            border-radius: 2rem;
+            box-shadow: 0 25px 45px -12px rgba(0, 0, 0, 0.35);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            transition: all 0.2s ease;
+        }
+
+        /* header */
+        .chat-header {
+            background: #2c3e66;
+            color: white;
+            padding: 1rem 1.8rem;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            border-bottom: 3px solid #ffb347;
+        }
+
+        .teacher-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .avatar {
+            background: #ffb347;
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+
+        .title h2 {
+            font-size: 1.35rem;
+            font-weight: 600;
+            letter-spacing: -0.2px;
+        }
+
+        .title p {
+            font-size: 0.8rem;
+            opacity: 0.85;
+            font-style: italic;
+        }
+
+        .rule-badge {
+            background: #1f2a44;
+            padding: 8px 16px;
+            border-radius: 60px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            box-shadow: inset 0 0 2px #ffffff40, 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .rule-badge span:first-child {
+            font-size: 1rem;
+        }
+
+        /* messages area */
+        .messages-area {
+            flex: 1;
+            overflow-y: auto;
+            padding: 1.5rem 1.2rem;
+            background: #f9fafc;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        /* message bubbles */
+        .message {
+            display: flex;
+            flex-direction: column;
+            max-width: 85%;
+            animation: fadeSlideUp 0.2s ease-out;
+        }
+
+        @keyframes fadeSlideUp {
+            from {
+                opacity: 0;
+                transform: translateY(8px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .teacher-msg {
+            align-self: flex-start;
+        }
+
+        .student-msg {
+            align-self: flex-end;
+        }
+
+        .bubble {
+            padding: 0.75rem 1rem;
+            border-radius: 1.5rem;
+            line-height: 1.45;
+            font-size: 1rem;
+            word-wrap: break-word;
+            white-space: pre-wrap;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+        }
+
+        .teacher-msg .bubble {
+            background: #e9edf5;
+            border-bottom-left-radius: 0.25rem;
+            color: #1f2a3e;
+            border: 1px solid #dce3ec;
+        }
+
+        .student-msg .bubble {
+            background: #2c3e66;
+            color: white;
+            border-bottom-right-radius: 0.25rem;
+        }
+
+        .correction-note {
+            font-size: 0.7rem;
+            margin-top: 4px;
+            margin-left: 12px;
+            color: #c96b1a;
+            background: #fff1e0;
+            display: inline-block;
+            padding: 2px 12px;
+            border-radius: 30px;
+            max-width: 95%;
+        }
+
+        .teacher-msg .correction-note {
+            margin-left: 12px;
+        }
+
+        /* typing area */
+        .input-area {
+            background: white;
+            border-top: 1px solid #dfe6ef;
+            padding: 1rem 1.2rem 1.2rem;
+            display: flex;
+            gap: 12px;
+            align-items: flex-end;
+        }
+
+        .input-wrapper {
+            flex: 1;
+            background: #f1f4f9;
+            border-radius: 2rem;
+            padding: 0.6rem 1rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border: 1px solid transparent;
+            transition: all 0.2s;
+        }
+
+        .input-wrapper:focus-within {
+            border-color: #ffb347;
+            background: white;
+            box-shadow: 0 0 0 2px #ffb34730;
+        }
+
+        .student-input {
+            flex: 1;
+            border: none;
+            background: transparent;
+            font-size: 1rem;
+            font-family: inherit;
+            resize: none;
+            outline: none;
+            max-height: 100px;
+            line-height: 1.4;
+        }
+
+        .student-input::placeholder {
+            color: #8e9aaf;
+            font-style: italic;
+        }
+
+        .send-btn {
+            background: #2c3e66;
+            border: none;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            font-size: 1.25rem;
+            cursor: pointer;
+            transition: 0.2s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .send-btn:hover {
+            background: #ffb347;
+            transform: scale(1.02);
+        }
+
+        .example-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 8px;
+            justify-content: flex-end;
+        }
+
+        .example-chip {
+            background: #eef2fa;
+            padding: 5px 12px;
+            border-radius: 30px;
+            font-size: 0.7rem;
+            color: #2c3e66;
+            cursor: pointer;
+            transition: 0.1s;
+        }
+
+        .example-chip:hover {
+            background: #ffb34730;
+        }
+
+        footer {
+            font-size: 0.65rem;
+            text-align: center;
+            background: #f9fafc;
+            padding: 6px;
+            color: #6f7b91;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        @media (max-width: 550px) {
+            .message {
+                max-width: 95%;
+            }
+            .chat-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .title h2 {
+                font-size: 1.1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="chat-app">
+    <div class="chat-header">
+        <div class="teacher-info">
+            <div class="avatar">🧑‍🏫</div>
+            <div class="title">
+                <h2>Ms. Emily · Native Teacher</h2>
+                <p>✨ friendly & gentle grammar correction</p>
+            </div>
+        </div>
+        <div class="rule-badge">
+            <span>📖</span> <span>I correct mistakes gently → then continue</span>
+        </div>
+    </div>
+
+    <div class="messages-area" id="messagesArea">
+        <!-- initial teacher message -->
+        <div class="message teacher-msg" id="initMsg">
+            <div class="bubble">
+                Hello! 😊 It's so nice to meet you. I’m Emily, your friendly English teacher. <br>
+                I’ll help you speak naturally. If you make a small grammar mistake, I’ll gently correct it, then we’ll keep chatting.<br><br>
+                Tell me: <strong>How are you feeling today?</strong> 🌟
+            </div>
+        </div>
+    </div>
+
+    <div class="input-area">
+        <div class="input-wrapper">
+            <textarea class="student-input" id="userInput" rows="1" placeholder="Type your message here... (I'll correct if needed)"></textarea>
+            <button class="send-btn" id="sendBtn">➤</button>
+        </div>
+    </div>
+    <div class="example-row" style="padding: 0 1.2rem 0.8rem 1.2rem; justify-content: flex-start; gap: 6px;">
+        <span style="font-size:0.7rem; color:#6c7a91;">💡 try:</span>
+        <span class="example-chip" data-example="I am feeling good, thank you!">I am feeling good, thank you!</span>
+        <span class="example-chip" data-example="I feel a little tired but happy">I feel a little tired but happy</span>
+        <span class="example-chip" data-example="I like study English">(mistake example → see correction)</span>
+    </div>
+    <footer>💬 Teacher corrects mistakes with kindness → then continues the story naturally.</footer>
+</div>
+
+<script>
+    // --- DOM elements
+    const messagesContainer = document.getElementById('messagesArea');
+    const userInput = document.getElementById('userInput');
+    const sendBtn = document.getElementById('sendBtn');
+
+    // helper: auto-resize textarea
+    function autoResizeTextarea() {
+        userInput.style.height = 'auto';
+        userInput.style.height = Math.min(userInput.scrollHeight, 100) + 'px';
+    }
+    userInput.addEventListener('input', autoResizeTextarea);
+
+    // --- Core: add a message (type: 'teacher' or 'student')
+    function addMessage(content, type, correctionText = null) {
+        const messageDiv = document.createElement('div');
+        messageDiv.classList.add('message');
+        messageDiv.classList.add(type === 'teacher' ? 'teacher-msg' : 'student-msg');
+
+        const bubble = document.createElement('div');
+        bubble.classList.add('bubble');
+        bubble.innerHTML = content.replace(/\n/g, '<br>');
+        messageDiv.appendChild(bubble);
+
+        if (correctionText) {
+            const correctionSpan = document.createElement('div');
+            correctionSpan.classList.add('correction-note');
+            correctionSpan.innerHTML = `📘 ${correctionText}`;
+            messageDiv.appendChild(correctionSpan);
+        }
+
+        messagesContainer.appendChild(messageDiv);
+        // scroll to bottom
+        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        return messageDiv;
+    }
+
+    // Simulate a teacher response with optional grammar correction
+    // This function analyzes the student's sentence, decides if there's a mistake,
+    // corrects it gently, and then generates a natural teacher reply.
+    function getTeacherResponse(studentMsgRaw) {
+        const trimmed = studentMsgRaw.trim();
+        if (trimmed === "") {
+            return {
+                correction: null,
+                reply: "Hmm, I didn't catch that! 😅 Could you tell me something? Anything at all — how you feel, what you like, or a question for me?"
+            };
+        }
+
+        // ---- GENTLE GRAMMAR CORRECTION LOGIC (simple but friendly) ----
+        let correction = null;
+        let correctedSentence = trimmed;
+
+        // 1) Common: missing subject pronoun + verb agreement? handle typical errors
+        // Rule: "I like study" -> "I like studying" or "I like to study"
+        const likeStudyPattern = /\b(I|she|he|they|we)\s+like\s+study\b/i;
+        if (likeStudyPattern.test(trimmed)) {
+            correction = `You said "${trimmed}". In English, after "like", we often use the -ing form (studying) or "to study". Try: "${trimmed.replace(/\blike\s+study\b/i, 'like studying')}" 👍`;
+            correctedSentence = trimmed.replace(/\blike\s+study\b/i, 'like studying');
+        }
+        // 2) "I am feel" -> "I feel" or "I am feeling"
+        else if (/\bI am feel\b/i.test(trimmed)) {
+            correction = `Almost perfect! Instead of "I am feel", you can say "I feel" or "I am feeling". Example: "I feel happy today." 😊`;
+            correctedSentence = trimmed.replace(/\bI am feel\b/i, 'I feel');
+        }
+        // 3) missing verb to be with adjective: "She very nice" -> "She is very nice"
+        else if (/\b(she|he|it|they|we|you)\s+(\w+)\s+(nice|happy|sad|tired|excited|busy|great)\b/i.test(trimmed) && !/\b(is|are|am)\b/i.test(trimmed)) {
+            const match = trimmed.match(/\b(she|he|it|they|we|you)\s+(\w+)\s+(nice|happy|sad|tired|excited|busy|great)\b/i);
+            if (match) {
+                const subject = match[1];
+                const beForm = (subject === 'they' || subject === 'we' || subject === 'you') ? 'are' : 'is';
+                correction = `Great sentence! Remember to add the verb "to be". Instead of "${trimmed}", you can say: "${subject} ${beForm} ${match[2]} ${match[3]}". Keep going! 💪`;
+                correctedSentence = `${subject} ${beForm} ${match[2]} ${match[3]}`;
+            }
+        }
+        // 4) "I go yesterday" -> past tense error: use "went"
+        else if (/\b(go|eat|see|do|buy)\s+yesterday|last\s+(night|week|month|year)\b/i.test(trimmed) && !/\b(went|ate|saw|did|bought)\b/i.test(trimmed)) {
+            const pastMap = { go: 'went', eat: 'ate', see: 'saw', do: 'did', buy: 'bought' };
+            let correctedTemp = trimmed;
+            let changed = false;
+            for (let [present, past] of Object.entries(pastMap)) {
+                const regex = new RegExp(`\\b${present}\\b`, 'gi');
+                if (regex.test(trimmed)) {
+                    correctedTemp = trimmed.replace(regex, past);
+                    correction = `📝 For past actions (yesterday/last week), use past tense. Instead of "${trimmed}", try: "${correctedTemp}". No worries, you're learning fast! ✨`;
+                    changed = true;
+                    break;
+                }
+            }
+            if (changed) correctedSentence = correctedTemp;
+        }
+
+        // Additional generic: article "a/an" missing before singular noun (simple heuristic)
+        else if (/\b(she|he|it|that|this) is (teacher|student|doctor|friend|cat|dog)\b/i.test(trimmed) && !/\b(a|an)\b/i.test(trimmed)) {
+            correction = `Small tip: we usually add "a" or "an" before a singular noun. For example: "She is a teacher." 🌟`;
+            correctedSentence = trimmed.replace(/\b(is) (teacher|student|doctor|friend|cat|dog)\b/i, '$1 a $2');
+        }
+
+        // If no correction found, we just continue friendly
+        // Now generate teacher's natural reply based on the (corrected) meaning
+        let reply = "";
+        const lower = correctedSentence.toLowerCase();
+
+        if (lower.includes('feeling good') || lower.includes('i am good') || lower.includes("i'm good") || lower.includes('fine')) {
+            reply = "That's wonderful to hear! 😊 Feeling good makes learning even more fun. What do you enjoy doing in your free time?";
+        } 
+        else if (lower.includes('tired') || lower.includes('sleepy')) {
+            reply = "Oh, being tired is totally normal. I hope you can rest soon! ☕️ In the meantime, let's have a light chat: what's your favorite comfort food?";
+        }
+        else if (lower.includes('happy') || lower.includes('excited')) {
+            reply = "Yay! I love positive energy ✨ Tell me more — what’s something that made you smile recently?";
+        }
+        else if (lower.includes('sad') || lower.includes('not good')) {
+            reply = "I'm sorry you're feeling a bit down. 🌧️ Sometimes talking helps. Would you like to describe something beautiful you saw today?";
+        }
+        else if (lower.includes('like') && (lower.includes('music') || lower.includes('song'))) {
+            reply = "Music is amazing! 🎵 I really like pop and acoustic. Who's your favorite singer?";
+        }
+        else if (lower.includes('like') && (lower.includes('movie') || lower.includes('film'))) {
+            reply = "Movies are a great way to learn English too! 🎬 What genre do you enjoy — comedy, action, or drama?";
+        }
+        else if (lower.includes('question') || lower.includes('ask you')) {
+            reply = "Of course, you can ask me anything! I love curious students. What would you like to know? (About English, culture, or me?)";
+        }
+        else if (lower.includes('help') || lower.includes('confused')) {
+            reply = "No worries at all! Learning a language has ups and downs. I'm here to help. 💡 Can you tell me one thing you find tricky in English grammar?";
+        }
+        else if (lower.includes('thank')) {
+            reply = "You're very welcome! 😊 It's my pleasure to chat with you. So, tell me — do you prefer morning or evening for studying?";
+        }
+        else {
+            reply = `That's interesting! 😄 "${correctedSentence}" — thanks for sharing. Let me ask you: what’s one small goal you have for your English this week?`;
+        }
+
+        // avoid generic double corrections if reply is too short
+        if (!reply) reply = "That's nice! Keep going, I’d love to know more about your day. 😊";
+
+        return { correction, reply };
+    }
+
+    // process student message
+    async function processStudentMessage() {
+        let rawText = userInput.value.trim();
+        if (rawText === "") return;
+
+        // Add student message to UI
+        addMessage(rawText, 'student');
+        userInput.value = "";
+        autoResizeTextarea();
+
+        // Simulate teacher "typing" feel? (optional slight delay for realism)
+        const teacherResponseObj = getTeacherResponse(rawText);
+
+        // add teacher message after tiny delay (natural)
+        setTimeout(() => {
+            let correctionHtml = null;
+            if (teacherResponseObj.correction) {
+                correctionHtml = teacherResponseObj.correction;
+            }
+            addMessage(teacherResponseObj.reply, 'teacher', correctionHtml);
+        }, 300);
+    }
+
+    // event listeners
+    sendBtn.addEventListener('click', processStudentMessage);
+    userInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            processStudentMessage();
+        }
+    });
+
+    // example chips
+    document.querySelectorAll('.example-chip').forEach(chip => {
+        chip.addEventListener('click', () => {
+            const exampleText = chip.getAttribute('data-example');
+            if (exampleText) {
+                userInput.value = exampleText;
+                autoResizeTextarea();
+                userInput.focus();
+            }
+        });
+    });
+
+    // initial autofocus
+    userInput.focus();
+</script>
+</body>
+</html>

@@ -1,0 +1,13 @@
+const startListening = () => {
+  const recognition = new window.webkitSpeechRecognition();
+  recognition.lang = 'en-US'; // Hoặc 'vi-VN'
+  recognition.onresult = (event) => {
+    const transcript = event.results[0][0].transcript;
+    handleSendMessage(transcript); // Gửi văn bản này cho AI
+  };
+  recognition.start();
+};const response = await model.generateContent([
+  "Bạn là giáo viên bản ngữ. Hãy phản hồi ngắn gọn, tự nhiên và sửa lỗi sai nếu có.",
+  userText 
+]);
+const aiText = response.response.text();
